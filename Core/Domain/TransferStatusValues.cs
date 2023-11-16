@@ -1,4 +1,6 @@
-﻿namespace Core.Domain
+﻿using System.Reflection;
+
+namespace Core.Domain
 {
     public static class TransferStatusValues
     {
@@ -87,5 +89,10 @@
         /// 
         /// </summary>
         public const string AgedLevel3 = "L";
+
+        public static IEnumerable<string> PossibleValues =>
+            typeof(TransferStatusValues).GetFields(bindingAttr: BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)
+                .Where(fi => fi.IsLiteral && !fi.IsInitOnly)
+                .Select(i => i.GetValue(typeof(TransferStatusValues))?.ToString() ?? string.Empty);
     }
 }
