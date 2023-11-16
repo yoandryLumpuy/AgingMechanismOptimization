@@ -34,10 +34,14 @@ namespace Domain.Services.Commands
                 var range = settings.FirstOrDefault(s => s.LowRange <= days && (s.HighRange == null || s.HighRange >= days));
 
                 if (range == null) continue;
+
+                item.TransferStatusId = range.TransferStatusId;
                 
                 await _sender.Send(
                     new TransactionStatusChangeCommand(item.Id, item.TransferStatusId, range.TransferStatusId), cancellationToken);
             }
+
+            _unitOfWork.Complete();
         }
     }
 }
