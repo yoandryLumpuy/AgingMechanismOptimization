@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Core.Domain;
+using Infrastructure.Persistence.Seed.Generators;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Persistence.Seed
 {
@@ -11,9 +13,13 @@ namespace Infrastructure.Persistence.Seed
 
         public int CountToGenerate { get; }
 
-        public Task SeedAsync(DbContext dbContext)
+        public async Task SeedAsync(DbContext dbContext)
         {
-            throw new NotImplementedException();
+            var repository = dbContext.Set<Transaction>();
+
+            await repository.AddRangeAsync(TransactionFaker.Instance.Generate(CountToGenerate));
+
+            await dbContext.SaveChangesAsync();
         }
     }
 }
